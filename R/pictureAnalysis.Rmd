@@ -11,6 +11,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "/Users/jeremyfroidevaux/Library/CloudStorage/GoogleDrive-jfroidevaux@creamontblanc.org/Drive partagés/prototool/herbiland/analyses/ecotone/fisheyecam")
+rm(list=ls()) 
 ```
 
 ## Load libraries
@@ -23,16 +25,16 @@ lapply(library, require, character.only = TRUE)
 ## Analyse the pics
 ```{r}
 #Cannot automatize the process since the impact of the automatic threshold value should be checked visually for each pic
-picff<-"/Users/jeremyfroidevaux/Library/CloudStorage/GoogleDrive-jfroidevaux@creamontblanc.org/Drive partagés/prototool/herbiland/analyses/ecotone/data/pictures_fisheyelens/20240719_112858.jpg"
+picff<-"data/pictures_fisheyelens/20240719_112858.jpg"
 img<-import_fisheye(picff,circular=FALSE,channel='2BG',gamma=2.2,display=TRUE)
 
-#Threshold value to binarize the pic : manual = NULL and check that the binarized pic is ok. If not, reduce the threshold (-10) and so on. 
+#Threshold value to binarize the pic : manual = NULL and check that the binarized pic is ok. If not, reduce the threshold (-10) and so on until we are satisfy with the pic (no noisy pixels)
 imgB<-binarize_fisheye(img,method = "Otsu",zonal = FALSE,manual = NULL,display = TRUE,export = FALSE) 
 imgB<-binarize_fisheye(img,method = "Otsu",zonal = FALSE,manual=145,display = TRUE,export = FALSE) 
 imgG<-gapfrac_fisheye(imgB,maxVZA=90,startVZA=0,endVZA=50,nrings=7,nseg=8,display=TRUE) 
 tb<-canopy_fisheye(imgG)
 tb$id <- tools::file_path_sans_ext(basename(picff))
-write.csv(tb,"/Users/jeremyfroidevaux/Library/CloudStorage/GoogleDrive-jfroidevaux@creamontblanc.org/Drive partagés/prototool/herbiland/analyses/ecotone/output/pictures_fisheyelens/PA001X.csv")
+write.csv(tb,"/output/pictures_fisheyelens/20240719_112858.csv")
 ```
 
 ## Merge the csv files
